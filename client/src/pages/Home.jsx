@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import "./Home.css";
 
 const API = "http://localhost:5000/api";
 
@@ -12,12 +13,8 @@ const Home = () => {
 
   useEffect(() => { fetchPosts(); }, []);
   const fetchPosts = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(`${API}/posts`);
-      const data = response.data?.posts || [];
-      setPosts(data.filter((post) => post.status === "published" && post.isDeleted !== true).sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0)));
-    } catch (error) { console.error("Home posts error:", error); }
+    try { setLoading(true); const response = await axios.get(`${API}/posts`); const data = response.data?.posts || []; setPosts(data.filter((post) => post.status === "published" && post.isDeleted !== true).sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0))); }
+    catch (error) { console.error("Home posts error:", error); }
     finally { setLoading(false); }
   };
   const getPosts = (type, limit = 12) => posts.filter((post) => post.type === type).slice(0, limit);
@@ -33,44 +30,16 @@ const Home = () => {
       {/* HEADER — unchanged */}
       <header className="bg-[#d40000]"><div className="h-[105px] flex flex-col items-center justify-center text-center px-3"><Link to="/" className="no-underline"><h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">BHARAT JOBS</h1><p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">BharatJobs.com</p></Link></div></header>
       <nav className="bg-[#050d52]"><div className="flex flex-wrap justify-center"><NavItem to="/" text="Home" active /><NavItem to="/jobs" text="Latest Job" /><NavItem to="/admit-card" text="Admit Card" /><NavItem to="/results" text="Result" /><NavItem to="/admission" text="Admission" /><NavItem to="/syllabus" text="Syllabus" /><NavItem to="/answer-key" text="Answer Key" /><NavItem to="/contact" text="Contact Us" /></div></nav>
-
-      {/* REDESIGNED HOME CONTENT */}
       <div className="px-3 sm:px-5 pt-4">
-        <div className="home-welcome">
-          <div className="home-welcome-copy"><span className="home-kicker">BHARATJOBS • GOVERNMENT CAREER PORTAL</span><h2>Find the right government opportunity</h2><p>Latest Jobs, Results, Admit Cards and other important exam updates — all in one simple place.</p></div>
-          <div className="home-welcome-stats"><div><strong>{posts.length}</strong><span>Total Updates</span></div><div><strong>{getPosts("job").length}</strong><span>Latest Jobs</span></div></div>
-        </div>
-
-        <div className="home-search-wrap">
-          <div className="home-search-title"><span>Search BharatJobs</span><small>Find jobs, exams, results & notifications</small></div>
-          <form onSubmit={(e) => e.preventDefault()} className="home-search-form"><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by job name, exam, department or result..." />{search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}<button type="submit">Search</button></form>
-        </div>
-
+        <div className="home-welcome"><div className="home-welcome-copy"><span className="home-kicker">BHARATJOBS • GOVERNMENT CAREER PORTAL</span><h2>Find the right government opportunity</h2><p>Latest Jobs, Results, Admit Cards and other important exam updates — all in one simple place.</p></div><div className="home-welcome-stats"><div><strong>{posts.length}</strong><span>Total Updates</span></div><div><strong>{getPosts("job").length}</strong><span>Latest Jobs</span></div></div></div>
+        <div className="home-search-wrap"><div className="home-search-title"><span>Search BharatJobs</span><small>Find jobs, exams, results & notifications</small></div><form onSubmit={(e) => e.preventDefault()} className="home-search-form"><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by job name, exam, department or result..." />{search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}<button type="submit">Search</button></form></div>
         {search.trim() ? <section className="home-panel mt-4"><PanelHeading title="Search Results" count={searchResults.length} /><div className="home-list">{searchResults.length ? searchResults.map((post) => <PostItem key={post._id} post={post} />) : <div className="home-empty">No matching posts found.</div>}</div></section> : <>
           <section className="mt-5"><div className="home-section-heading"><div><span>EXPLORE</span><h2>Quick Access</h2></div><p>Go directly to what you need</p></div><div className="quick-grid"><QuickCard to="/jobs" title="Latest Jobs" desc="New government vacancies" number={getPosts("job").length} icon="J" /><QuickCard to="/results" title="Results" desc="Latest exam results" number={getPosts("result").length} icon="R" /><QuickCard to="/admit-card" title="Admit Card" desc="Download your admit card" number={getPosts("admit-card").length} icon="A" /><QuickCard to="/answer-key" title="Answer Key" desc="Official keys & solutions" number={getPosts("answer-key").length} icon="K" /><QuickCard to="/admission" title="Admission" desc="Admission notifications" number={getPosts("admission").length} icon="D" /></div></section>
-
           {featuredPosts.length > 0 && <section className="mt-5 home-featured"><div className="home-section-heading"><div><span>DON'T MISS</span><h2>Important Updates</h2></div><Link to="/jobs">View all updates →</Link></div><div className="featured-grid">{featuredPosts.map((post, index) => <Link key={post._id} to={`/post/${post.slug}`} className="featured-card"><span className="featured-index">0{index + 1}</span><div><strong>{post.title}</strong><small>{checkNew(post) ? "New notification" : "Featured notification"}</small></div><span className="featured-arrow">→</span></Link>)}</div></section>}
-
-          {loading ? <div className="home-empty py-12">Loading latest updates...</div> : <>
-            <div className="home-content-layout mt-5">
-              <div className="home-main-column">
-                <HomeSection title="Latest Jobs" subtitle="Fresh government recruitment notifications" posts={getPosts("job", 12)} view="/jobs" tone="blue" featured />
-                <HomeSection title="Latest Posts" subtitle="Recently published BharatJobs updates" posts={posts.slice(0, 10)} view="/jobs" tone="red" />
-              </div>
-              <aside className="home-side-column">
-                <HomeSection title="Results" subtitle="Latest exam results" posts={getPosts("result", 5)} view="/results" tone="green" compact />
-                <HomeSection title="Admit Cards" subtitle="Download admit cards" posts={getPosts("admit-card", 5)} view="/admit-card" tone="orange" compact />
-              </aside>
-            </div>
-
-            <div className="home-category-grid mt-4"><HomeSection title="Answer Key" subtitle="Official answer keys & solutions" posts={getPosts("answer-key", 7)} view="/answer-key" tone="purple" /><HomeSection title="Admission" subtitle="Admission & application updates" posts={getPosts("admission", 7)} view="/admission" tone="red" /></div>
-          </>}
-
-          <section className="mt-5 home-info-grid"><InfoCard title="Why use BharatJobs?" text="Everything you need for government exam preparation and recruitment updates, organized category-wise for quick access." items={["Latest recruitment notifications", "Results and admit cards", "Answer keys and admission updates", "Simple and fast category browsing"]} /><InfoCard title="Important Notice" text="BharatJobs is an informational platform. Always verify important details with the official notification before applying." items={["Check eligibility and age limit", "Confirm application dates and fees", "Verify documents and official links"]} /></section>
-          <section className="mt-4 home-seo"><h2>Latest Government Jobs & Sarkari Updates</h2><p>BharatJobs helps candidates find the latest government recruitment notifications, online forms, examination results, admit cards, answer keys, admissions and other important career updates in one place.</p></section>
+          {loading ? <div className="home-empty py-12">Loading latest updates...</div> : <><div className="home-content-layout mt-5"><div className="home-main-column"><HomeSection title="Latest Jobs" subtitle="Fresh government recruitment notifications" posts={getPosts("job", 12)} view="/jobs" tone="blue" featured /><HomeSection title="Latest Posts" subtitle="Recently published BharatJobs updates" posts={posts.slice(0, 10)} view="/jobs" tone="red" /></div><aside className="home-side-column"><HomeSection title="Results" subtitle="Latest exam results" posts={getPosts("result", 5)} view="/results" tone="green" compact /><HomeSection title="Admit Cards" subtitle="Download admit cards" posts={getPosts("admit-card", 5)} view="/admit-card" tone="orange" compact /></aside></div><div className="home-category-grid mt-4"><HomeSection title="Answer Key" subtitle="Official answer keys & solutions" posts={getPosts("answer-key", 7)} view="/answer-key" tone="purple" /><HomeSection title="Admission" subtitle="Admission & application updates" posts={getPosts("admission", 7)} view="/admission" tone="red" /></div></>}
+          <section className="mt-5 home-info-grid"><InfoCard title="Why use BharatJobs?" text="Everything you need for government exam preparation and recruitment updates, organized category-wise for quick access." items={["Latest recruitment notifications", "Results and admit cards", "Answer keys and admission updates", "Simple and fast category browsing"]} /><InfoCard title="Important Notice" text="BharatJobs is an informational platform. Always verify important details with the official notification before applying." items={["Check eligibility and age limit", "Confirm application dates and fees", "Verify documents and official links"]} /></section><section className="mt-4 home-seo"><h2>Latest Government Jobs & Sarkari Updates</h2><p>BharatJobs helps candidates find the latest government recruitment notifications, online forms, examination results, admit cards, answer keys, admissions and other important career updates in one place.</p></section>
         </>}
       </div>
-
       {/* FOOTER — unchanged */}
       <footer className="bg-[#050d52] text-white mt-7"><div className="px-4 py-6"><div className="grid grid-cols-1 sm:grid-cols-3 gap-5"><div><h3 className="font-bold text-base">BharatJobs</h3><p className="text-[11px] text-slate-300 mt-2 leading-5">Latest Government Jobs, Results, Admit Cards and Examination Notifications.</p></div><FooterColumn title="Important Links" links={[["Latest Jobs", "/jobs"], ["Results", "/results"], ["Admit Card", "/admit-card"]]} /><FooterColumn title="Other Links" links={[["Answer Key", "/answer-key"], ["Admission", "/admission"], ["Syllabus", "/syllabus"]]} /></div><div className="border-t border-blue-900 mt-5 pt-4 text-center"><p className="text-[10px] text-slate-400">Copyright © {new Date().getFullYear()} | BharatJobs.com</p></div></div></footer>
     </div></div>
@@ -85,5 +54,4 @@ const PostItem = ({ post }) => { const isNew = checkNew(post); return <Link to={
 const checkNew = (post) => { const date = new Date(post.publishedAt || post.createdAt || 0); return date.getTime() ? Date.now() - date.getTime() <= 3 * 24 * 60 * 60 * 1000 : false; };
 const InfoCard = ({ title, text, items }) => <section className="home-info-card"><h2>{title}</h2><p>{text}</p><ul>{items.map((item) => <li key={item}>{item}</li>)}</ul></section>;
 const FooterColumn = ({ title, links }) => <div><h3 className="font-bold text-sm">{title}</h3><div className="mt-2 space-y-1 text-[11px]">{links.map(([label, path]) => <Link key={path} to={path} className="block text-slate-300 hover:text-white no-underline">{label}</Link>)}</div></div>;
-
 export default Home;
