@@ -3,13 +3,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
-const getApiBase = () => {
-  const configured = import.meta.env.VITE_API_URL?.trim();
-  if (configured) return configured.replace(/\/$/, "");
-  if (typeof window !== "undefined" && window.location.hostname !== "localhost") return `${window.location.origin}/api`;
-  return "http://localhost:5000/api";
-};
-const API = getApiBase();
+const API = "https://bharatjob-1.onrender.com/api";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -52,10 +46,7 @@ const Home = () => {
 
   return (
     <>
-      <Helmet>
-        <title>BharatJobs - Latest Government Jobs, Results, Admit Card & Sarkari Updates</title>
-        <meta name="description" content="BharatJobs provides latest government jobs, Sarkari jobs, results, admit cards, answer keys, syllabus, admissions and recruitment notifications." />
-      </Helmet>
+      <Helmet><title>BharatJobs - Latest Government Jobs, Results, Admit Card & Sarkari Updates</title><meta name="description" content="BharatJobs provides latest government jobs, Sarkari jobs, results, admit cards, answer keys, syllabus, admissions and recruitment notifications." /></Helmet>
       <div className="min-h-screen bg-[#eeeeee] font-[Arial,sans-serif]"><div className="w-full max-w-[1000px] mx-auto bg-white min-h-screen">
         <header className="bg-[#d40000]"><div className="h-[105px] flex flex-col items-center justify-center text-center px-3"><Link to="/" className="no-underline"><h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">BHARAT JOBS</h1><p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">BharatJobs.com</p></Link></div></header>
         <nav className="bg-[#050d52]"><div className="flex flex-wrap justify-center"><NavItem to="/" text="Home" active /><NavItem to="/jobs" text="Latest Job" /><NavItem to="/admit-card" text="Admit Card" /><NavItem to="/results" text="Result" /><NavItem to="/admission" text="Admission" /><NavItem to="/syllabus" text="Syllabus" /><NavItem to="/answer-key" text="Answer Key" /><NavItem to="/contact" text="Contact Us" /></div></nav>
