@@ -19,15 +19,17 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        // The API defaults to 20 posts. Fetch the maximum public page so a job
-        // is not hidden simply because newer result/admit-card posts came first.
-        const response = await axios.get(`${API}/posts?limit=100`);
-        const data = Array.isArray(response.data) ? response.data : response.data?.posts || [];
-        setPosts(
-          data
-            .filter((post) => post.status === "published" && post.isDeleted !== true)
-            .sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0))
+        const types = ["job", "result", "admit-card", "answer-key", "admission"];
+        const responses = await Promise.all(
+          types.map((type) => axios.get(`${API}/posts?type=${encodeURIComponent(type)}&limit=12`))
         );
+        const allPosts = responses.flatMap((response) => {
+          const data = Array.isArray(response.data) ? response.data : response.data?.posts || [];
+          return data.filter((post) => post.status === "published" && post.isDeleted !== true);
+        });
+        const uniquePosts = Array.from(new Map(allPosts.map((post) => [post._id, post])).values());
+        uniquePosts.sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0));
+        setPosts(uniquePosts);
       } catch (error) {
         console.error("Home posts error:", error);
       } finally {
