@@ -10,10 +10,6 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  // ==========================================
-  // LOAD POSTS
-  // ==========================================
-
   useEffect(() => {
     fetchPosts();
   }, []);
@@ -21,29 +17,15 @@ const Home = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-
       const response = await axios.get(`${API}/posts`);
-
       const data = response.data?.posts || [];
-
       const publishedPosts = data
-        .filter(
-          (post) =>
-            post.status === "published" &&
-            post.isDeleted !== true
-        )
+        .filter((post) => post.status === "published" && post.isDeleted !== true)
         .sort((a, b) => {
-          const dateA = new Date(
-            a.publishedAt || a.createdAt || 0
-          );
-
-          const dateB = new Date(
-            b.publishedAt || b.createdAt || 0
-          );
-
+          const dateA = new Date(a.publishedAt || a.createdAt || 0);
+          const dateB = new Date(b.publishedAt || b.createdAt || 0);
           return dateB - dateA;
         });
-
       setPosts(publishedPosts);
     } catch (error) {
       console.error("Home posts error:", error);
@@ -52,968 +34,324 @@ const Home = () => {
     }
   };
 
-  // ==========================================
-  // CATEGORY POSTS
-  // ==========================================
-
   const getPosts = (type) => {
-    return posts
-      .filter((post) => post.type === type)
-      .slice(0, 12);
+    return posts.filter((post) => post.type === type).slice(0, 12);
   };
 
-  // ==========================================
-  // FEATURED POSTS
-  // ==========================================
-
   const featuredPosts = useMemo(() => {
-    const featured = posts.filter(
-      (post) => post.featured === true
-    );
-
-    if (featured.length > 0) {
-      return featured.slice(0, 8);
-    }
-
+    const featured = posts.filter((post) => post.featured === true);
+    if (featured.length > 0) return featured.slice(0, 8);
     return posts.slice(0, 7);
   }, [posts]);
 
-  // ==========================================
-  // SEARCH
-  // ==========================================
-
   const searchResults = useMemo(() => {
     const value = search.trim().toLowerCase();
-
     if (!value) return [];
-
     return posts
-      .filter((post) =>
-        post.title?.toLowerCase().includes(value)
-      )
+      .filter((post) => post.title?.toLowerCase().includes(value))
       .slice(0, 10);
   }, [search, posts]);
 
-  // ==========================================
-  // SEO
-  // ==========================================
-
   const siteUrl = window.location.origin;
-
-  const seoTitle =
-    "BharatJobs - Latest Government Jobs, Results, Admit Card & Sarkari Updates";
-
-  const seoDescription =
-    "BharatJobs provides the latest government jobs, Sarkari jobs, exam results, admit cards, answer keys, syllabus, admissions and recruitment notifications.";
+  const seoTitle = "BharatJobs - Latest Government Jobs, Results, Admit Card & Sarkari Updates";
+  const seoDescription = "BharatJobs provides the latest government jobs, Sarkari jobs, exam results, admit cards, answer keys, syllabus, admissions and recruitment notifications.";
 
   return (
     <>
-      {/* =================================================
-          SEO
-      ================================================= */}
-
       <Helmet>
-
-        <title>
-          {seoTitle}
-        </title>
-
-        <meta
-          name="description"
-          content={seoDescription}
-        />
-
-        <meta
-          name="keywords"
-          content="BharatJobs, Government Jobs, Sarkari Jobs, Latest Government Jobs, Sarkari Result, Admit Card, Government Result, Answer Key, Syllabus, Admission, Recruitment"
-        />
-
-        <meta
-          name="robots"
-          content="index, follow, max-image-preview:large"
-        />
-
-        <link
-          rel="canonical"
-          href={siteUrl}
-        />
-
-        {/* Open Graph */}
-
-        <meta
-          property="og:type"
-          content="website"
-        />
-
-        <meta
-          property="og:title"
-          content={seoTitle}
-        />
-
-        <meta
-          property="og:description"
-          content={seoDescription}
-        />
-
-        <meta
-          property="og:url"
-          content={siteUrl}
-        />
-
-        <meta
-          property="og:site_name"
-          content="BharatJobs"
-        />
-
-        {/* Twitter */}
-
-        <meta
-          name="twitter:card"
-          content="summary"
-        />
-
-        <meta
-          name="twitter:title"
-          content={seoTitle}
-        />
-
-        <meta
-          name="twitter:description"
-          content={seoDescription}
-        />
-
-        {/* =================================================
-            WEBSITE STRUCTURED DATA
-        ================================================= */}
-
+        <title>{seoTitle}</title>
+        <meta name="description" content={seoDescription} />
+        <meta name="keywords" content="BharatJobs, Government Jobs, Sarkari Jobs, Latest Government Jobs, Sarkari Result, Admit Card, Government Result, Answer Key, Syllabus, Admission, Recruitment" />
+        <meta name="robots" content="index, follow, max-image-preview:large" />
+        <link rel="canonical" href={siteUrl} />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content={seoTitle} />
+        <meta property="og:description" content={seoDescription} />
+        <meta property="og:url" content={siteUrl} />
+        <meta property="og:site_name" content="BharatJobs" />
+        <meta name="twitter:card" content="summary" />
+        <meta name="twitter:title" content={seoTitle} />
+        <meta name="twitter:description" content={seoDescription} />
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "WebSite",
-
             name: "BharatJobs",
-
             url: siteUrl,
-
             description: seoDescription,
-
             potentialAction: {
               "@type": "SearchAction",
-
-              target: {
-                "@type": "EntryPoint",
-
-                urlTemplate:
-                  `${siteUrl}/?search={search_term_string}`,
-              },
-
-              "query-input":
-                "required name=search_term_string",
+              target: { "@type": "EntryPoint", urlTemplate: `${siteUrl}/?search={search_term_string}` },
+              "query-input": "required name=search_term_string",
             },
           })}
         </script>
-
-        {/* =================================================
-            ORGANIZATION STRUCTURED DATA
-        ================================================= */}
-
         <script type="application/ld+json">
           {JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Organization",
-
             name: "BharatJobs",
-
             url: siteUrl,
           })}
         </script>
-
       </Helmet>
 
-
-      {/* =================================================
-          PAGE
-      ================================================= */}
-
       <div className="min-h-screen bg-[#eeeeee] font-[Arial,sans-serif]">
-
         <div className="w-full max-w-[1000px] mx-auto bg-white min-h-screen">
-
-          {/* =================================================
-              HEADER
-          ================================================= */}
-
           <header className="bg-[#d40000]">
-
             <div className="h-[105px] flex flex-col items-center justify-center text-center px-3">
-
-              <Link
-                to="/"
-                className="no-underline"
-              >
-
-                <h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">
-                  BHARAT JOBS
-                </h1>
-
-                <p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">
-                  BharatJobs.com
-                </p>
-
+              <Link to="/" className="no-underline">
+                <h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">BHARAT JOBS</h1>
+                <p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">BharatJobs.com</p>
               </Link>
-
             </div>
-
           </header>
 
-
-          {/* =================================================
-              NAVIGATION
-          ================================================= */}
-
           <nav className="bg-[#050d52]">
-
             <div className="flex flex-wrap justify-center">
-
-              <NavItem
-                to="/"
-                text="Home"
-                active
-              />
-
-              <NavItem
-                to="/jobs"
-                text="Latest Job"
-              />
-
-              <NavItem
-                to="/admit-card"
-                text="Admit Card"
-              />
-
-              <NavItem
-                to="/results"
-                text="Result"
-              />
-
-              <NavItem
-                to="/admission"
-                text="Admission"
-              />
-
-              <NavItem
-                to="/syllabus"
-                text="Syllabus"
-              />
-
-              <NavItem
-                to="/answer-key"
-                text="Answer Key"
-              />
-
-              <NavItem
-                to="/contact"
-                text="Contact Us"
-              />
-
+              <NavItem to="/" text="Home" active />
+              <NavItem to="/jobs" text="Latest Job" />
+              <NavItem to="/admit-card" text="Admit Card" />
+              <NavItem to="/results" text="Result" />
+              <NavItem to="/admission" text="Admission" />
+              <NavItem to="/syllabus" text="Syllabus" />
+              <NavItem to="/answer-key" text="Answer Key" />
+              <NavItem to="/contact" text="Contact Us" />
             </div>
-
           </nav>
 
-
-          {/* =================================================
-              DESCRIPTION
-          ================================================= */}
-
           <div className="text-center px-5 py-3">
-
             <p className="text-[11px] sm:text-[12px] leading-5 text-slate-700">
-
-              BharatJobs Official Website - Get Online Form,
-              Results, Admit Card, Answer Key, Syllabus,
-              Career News, Sarkari Yojana, Scholarship,
-              Sarkari Notice and Latest Government Jobs.
-
+              BharatJobs Official Website - Get Online Form, Results, Admit Card, Answer Key, Syllabus,
+              Career News, Sarkari Yojana, Scholarship, Sarkari Notice and Latest Government Jobs.
             </p>
-
           </div>
-
-
-          {/* =================================================
-              LIVE
-          ================================================= */}
 
           <div className="flex justify-center">
-
             <span className="inline-flex items-center gap-1 text-[11px] font-bold">
-
               <span className="w-2 h-2 rounded-full bg-red-600 animate-pulse" />
-
               LIVE
-
             </span>
-
           </div>
-
-
-          {/* =================================================
-              WHATSAPP
-          ================================================= */}
 
           <div className="text-center mt-2">
-
-            <a
-              href="#"
-              className="inline-block bg-[#20c76a] text-white text-[11px] font-bold px-5 py-[6px] rounded-full no-underline"
-            >
-              Join WhatsApp Channel
-            </a>
-
+            <a href="#" className="inline-block bg-[#20c76a] text-white text-[11px] font-bold px-5 py-[6px] rounded-full no-underline">Join WhatsApp Channel</a>
           </div>
-
-
-          {/* =================================================
-              TOOLS
-          ================================================= */}
 
           <div className="text-center mt-2">
-
-            <a
-              href="#"
-              className="text-blue-700 underline text-[13px] font-bold"
-            >
-              BharatJobs Tools
-            </a>
-
+            <a href="#" className="text-blue-700 underline text-[13px] font-bold">BharatJobs Tools</a>
           </div>
-
-
-          {/* =================================================
-              SEARCH
-          ================================================= */}
 
           <div className="px-3 sm:px-5 mt-4">
-
-            <form
-              onSubmit={(e) =>
-                e.preventDefault()
-              }
-              className="flex max-w-[650px] mx-auto"
-            >
-
+            <form onSubmit={(e) => e.preventDefault()} className="flex max-w-[650px] mx-auto">
               <input
                 type="text"
                 value={search}
-                onChange={(e) =>
-                  setSearch(e.target.value)
-                }
+                onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search Government Jobs, Results, Admit Cards..."
                 className="flex-1 h-[40px] border border-slate-300 px-3 text-[12px] outline-none focus:border-[#000080]"
               />
-
-              <button
-                type="submit"
-                className="w-[85px] h-[40px] bg-[#000080] text-white text-[12px] font-bold"
-              >
-                Search
-              </button>
-
+              <button type="submit" className="w-[85px] h-[40px] bg-[#000080] text-white text-[12px] font-bold">Search</button>
             </form>
-
           </div>
 
-
-          {/* =================================================
-              SEARCH RESULTS
-          ================================================= */}
-
           {search.trim() && (
-
             <section className="px-3 sm:px-5 mt-4">
-
-              <SectionTitle>
-                Search Results
-              </SectionTitle>
-
+              <SectionTitle>Search Results</SectionTitle>
               <div className="border border-slate-300 border-t-0">
-
                 {searchResults.length === 0 ? (
-
-                  <div className="text-center py-7 text-xs text-slate-500">
-                    No matching posts found.
-                  </div>
-
+                  <div className="text-center py-7 text-xs text-slate-500">No matching posts found.</div>
                 ) : (
-
-                  searchResults.map((post) => (
-                    <PostItem
-                      key={post._id}
-                      post={post}
-                    />
-                  ))
-
+                  searchResults.map((post) => <PostItem key={post._id} post={post} />)
                 )}
-
               </div>
-
             </section>
-
           )}
-
-
-          {/* =================================================
-              NORMAL HOME CONTENT
-          ================================================= */}
 
           {!search.trim() && (
-
             <>
-
-              {/* FEATURED */}
-
               <section className="px-3 sm:px-5 mt-3">
-
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-[2px]">
-
-                  {featuredPosts.map(
-                    (post, index) => {
-
-                      const colors = [
-                        "bg-[#e53935]",
-                        "bg-[#fb8c00]",
-                        "bg-[#00897b]",
-                        "bg-[#1e88e5]",
-                        "bg-[#8e24aa]",
-                        "bg-[#d81b60]",
-                        "bg-[#43a047]",
-                        "bg-[#3949ab]",
-                      ];
-
-                      return (
-                        <Link
-                          key={post._id}
-                          to={`/post/${post.slug}`}
-                          className={`
-                            ${colors[index % colors.length]}
-                            min-h-[42px]
-                            flex
-                            items-center
-                            justify-center
-                            text-center
-                            text-white
-                            px-2
-                            py-2
-                            text-[10px]
-                            sm:text-[11px]
-                            font-bold
-                            leading-4
-                            no-underline
-                            hover:opacity-90
-                          `}
-                        >
-                          {post.title}
-                        </Link>
-                      );
-                    }
-                  )}
-
+                  {featuredPosts.map((post, index) => {
+                    const colors = ["bg-[#e53935]", "bg-[#fb8c00]", "bg-[#00897b]", "bg-[#1e88e5]", "bg-[#8e24aa]", "bg-[#d81b60]", "bg-[#43a047]", "bg-[#3949ab]"];
+                    return (
+                      <Link
+                        key={post._id}
+                        to={`/post/${post.slug}`}
+                        className={`${colors[index % colors.length]} min-h-[42px] flex items-center justify-center text-center text-white px-2 py-2 text-[10px] sm:text-[11px] font-bold leading-4 no-underline hover:opacity-90`}
+                      >
+                        {post.title}
+                      </Link>
+                    );
+                  })}
                 </div>
-
               </section>
-
-
-              {/* MAIN CONTENT */}
 
               <main className="px-3 sm:px-5 mt-5">
-
                 {loading ? (
-
-                  <div className="text-center py-10 text-sm text-slate-500">
-                    Loading...
-                  </div>
-
+                  <div className="text-center py-10 text-sm text-slate-500">Loading...</div>
                 ) : (
-
                   <>
-
-                    {/* THREE COLUMN */}
-
+                    {/* THREE COLUMN: Latest Jobs first, then Results */}
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-[5px]">
-
-                      <HomeSection
-                        title="Results"
-                        posts={getPosts("result")}
-                        view="/results"
-                      />
-
-                      <HomeSection
-                        title="Admit Cards"
-                        posts={getPosts("admit-card")}
-                        view="/admit-card"
-                      />
-
-                      <HomeSection
-                        title="Latest Jobs"
-                        posts={getPosts("job")}
-                        view="/jobs"
-                      />
-
+                      <HomeSection title="Latest Jobs" posts={getPosts("job")} view="/jobs" />
+                      <HomeSection title="Results" posts={getPosts("result")} view="/results" />
+                      <HomeSection title="Admit Cards" posts={getPosts("admit-card")} view="/admit-card" />
                     </div>
-
-
-                    {/* SECOND ROW */}
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-[5px] mt-[5px]">
-
-                      <HomeSection
-                        title="Answer Key"
-                        posts={getPosts("answer-key")}
-                        view="/answer-key"
-                      />
-
-                      <HomeSection
-                        title="Admission"
-                        posts={getPosts("admission")}
-                        view="/admission"
-                      />
-
+                      <HomeSection title="Answer Key" posts={getPosts("answer-key")} view="/answer-key" />
+                      <HomeSection title="Admission" posts={getPosts("admission")} view="/admission" />
                     </div>
 
-
-                    {/* LATEST POSTS */}
-
                     {posts.length > 0 && (
-
                       <section className="mt-7">
-
-                        <SectionTitle>
-                          Latest Posts
-                        </SectionTitle>
-
+                        <SectionTitle>Latest Posts</SectionTitle>
                         <div className="border border-slate-300 border-t-0">
-
-                          {posts
-                            .slice(0, 15)
-                            .map((post) => (
-                              <PostItem
-                                key={post._id}
-                                post={post}
-                              />
-                            ))}
-
+                          {posts.slice(0, 15).map((post) => <PostItem key={post._id} post={post} />)}
                         </div>
-
                       </section>
-
                     )}
-
                   </>
-
                 )}
-
               </main>
 
-
-              {/* INFORMATION */}
-
               <section className="px-4 sm:px-6 mt-6">
-
                 <p className="text-[12px] leading-6 text-slate-700">
-
-                  <strong>
-                    BharatJobs 2026 :
-                  </strong>{" "}
-
-                  Find latest government job vacancies,
-                  Sarkari exam results, online forms,
-                  admit cards, answer keys, syllabus,
-                  admission notifications and government
-                  recruitment updates at BharatJobs.
-
+                  <strong>BharatJobs 2026 :</strong>{" "}
+                  Find latest government job vacancies, Sarkari exam results, online forms, admit cards,
+                  answer keys, syllabus, admission notifications and government recruitment updates.
                 </p>
-
                 <p className="text-[12px] leading-6 text-slate-700 mt-2">
-
-                  BharatJobs is an informational platform.
-                  Candidates should always verify the details
-                  from the official notification and official
-                  website of the concerned department.
-
+                  BharatJobs is an informational platform. Candidates should always verify the details from
+                  the official notification and official website of the concerned department.
                 </p>
-
               </section>
-
-
-              {/* TOP PAGES */}
 
               <section className="px-4 sm:px-6 mt-5">
-
-                <div className="text-center">
-
-                  <h2 className="text-[17px] font-bold text-slate-800">
-                    Top BharatJobs Pages
-                  </h2>
-
-                </div>
-
+                <div className="text-center"><h2 className="text-[17px] font-bold text-slate-800">Top BharatJobs Pages</h2></div>
                 <div className="text-center text-[12px] leading-7 mt-2">
-
-                  <Link
-                    to="/jobs"
-                    className="text-blue-700 hover:underline"
-                  >
-                    Latest Jobs
-                  </Link>
-
-                  {" | "}
-
-                  <Link
-                    to="/results"
-                    className="text-blue-700 hover:underline"
-                  >
-                    Government Results
-                  </Link>
-
-                  {" | "}
-
-                  <Link
-                    to="/admit-card"
-                    className="text-blue-700 hover:underline"
-                  >
-                    Admit Card
-                  </Link>
-
-                  {" | "}
-
-                  <Link
-                    to="/answer-key"
-                    className="text-blue-700 hover:underline"
-                  >
-                    Answer Key
-                  </Link>
-
-                  {" | "}
-
-                  <Link
-                    to="/admission"
-                    className="text-blue-700 hover:underline"
-                  >
-                    Admission
-                  </Link>
-
+                  <Link to="/jobs" className="text-blue-700 hover:underline">Latest Jobs</Link>{" | "}
+                  <Link to="/results" className="text-blue-700 hover:underline">Government Results</Link>{" | "}
+                  <Link to="/admit-card" className="text-blue-700 hover:underline">Admit Card</Link>{" | "}
+                  <Link to="/answer-key" className="text-blue-700 hover:underline">Answer Key</Link>{" | "}
+                  <Link to="/admission" className="text-blue-700 hover:underline">Admission</Link>
                 </div>
-
               </section>
-
-
-              {/* SEO CONTENT */}
 
               <section className="px-4 sm:px-6 mt-6">
-
-                <h2 className="text-[18px] font-bold text-slate-800">
-                  Latest Government Jobs
-                </h2>
-
+                <h2 className="text-[18px] font-bold text-slate-800">Latest Government Jobs</h2>
                 <p className="text-[12px] leading-6 text-slate-700 mt-2">
-
-                  BharatJobs provides information about
-                  latest government recruitment, Sarkari
-                  jobs, online forms, examination results,
-                  admit cards, answer keys, admissions and
-                  other important government notifications.
-
+                  BharatJobs provides information about latest government recruitment, Sarkari jobs, online forms,
+                  examination results, admit cards, answer keys, admissions and other important government notifications.
                 </p>
-
-                <h2 className="text-[18px] font-bold text-slate-800 mt-5">
-                  Sarkari Result and Government Jobs
-                </h2>
-
+                <h2 className="text-[18px] font-bold text-slate-800 mt-5">Sarkari Result and Government Jobs</h2>
                 <p className="text-[12px] leading-6 text-slate-700 mt-2">
-
-                  Candidates can use BharatJobs to find
-                  recruitment notifications and examination
-                  updates from various government departments,
-                  recruitment boards and organizations.
-
+                  Candidates can use BharatJobs to find recruitment notifications and examination updates from various
+                  government departments, recruitment boards and organizations.
                 </p>
-
               </section>
-
             </>
-
           )}
 
-
-          {/* =================================================
-              FOOTER
-          ================================================= */}
-
           <footer className="bg-[#050d52] text-white mt-7">
-
             <div className="px-4 py-6">
-
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
-
                 <div>
-
-                  <h3 className="font-bold text-base">
-                    BharatJobs
-                  </h3>
-
+                  <h3 className="font-bold text-base">BharatJobs</h3>
                   <p className="text-[11px] text-slate-300 mt-2 leading-5">
-                    Latest Government Jobs,
-                    Results, Admit Cards and
-                    Examination Notifications.
+                    Latest Government Jobs, Results, Admit Cards and Examination Notifications.
                   </p>
-
                 </div>
-
-
-                <FooterColumn
-                  title="Important Links"
-                  links={[
-                    ["Latest Jobs", "/jobs"],
-                    ["Results", "/results"],
-                    ["Admit Card", "/admit-card"],
-                  ]}
-                />
-
-
-                <FooterColumn
-                  title="Other Links"
-                  links={[
-                    ["Answer Key", "/answer-key"],
-                    ["Admission", "/admission"],
-                    ["Syllabus", "/syllabus"],
-                  ]}
-                />
-
+                <FooterColumn title="Important Links" links={[["Latest Jobs", "/jobs"], ["Results", "/results"], ["Admit Card", "/admit-card"]]} />
+                <FooterColumn title="Other Links" links={[["Answer Key", "/answer-key"], ["Admission", "/admission"], ["Syllabus", "/syllabus"]]} />
               </div>
-
-
               <div className="border-t border-blue-900 mt-5 pt-4 text-center">
-
-                <p className="text-[10px] text-slate-400">
-                  Copyright ©{" "}
-                  {new Date().getFullYear()} |
-                  BharatJobs.com
-                </p>
-
+                <p className="text-[10px] text-slate-400">Copyright ©{" "}{new Date().getFullYear()} | BharatJobs.com</p>
               </div>
-
             </div>
-
           </footer>
-
         </div>
-
       </div>
     </>
   );
 };
 
-
-/* =========================================================
-   NAV ITEM
-========================================================= */
-
-const NavItem = ({
-  to,
-  text,
-  active = false,
-}) => {
+const NavItem = ({ to, text, active = false }) => {
   return (
     <Link
       to={to}
-      className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${
-        active
-          ? "bg-[#17246b]"
-          : "hover:bg-[#17246b]"
-      }`}
+      className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${active ? "bg-[#17246b]" : "hover:bg-[#17246b]"}`}
     >
       {text}
     </Link>
   );
 };
 
-
-/* =========================================================
-   SECTION TITLE
-========================================================= */
-
-const SectionTitle = ({
-  children,
-}) => {
+const SectionTitle = ({ children }) => {
   return (
     <div className="bg-[#a90000] text-white text-center py-2">
-
-      <h2 className="text-[17px] sm:text-[19px] font-bold">
-        {children}
-      </h2>
-
+      <h2 className="text-[17px] sm:text-[19px] font-bold">{children}</h2>
     </div>
   );
 };
 
-
-/* =========================================================
-   HOME SECTION
-========================================================= */
-
-const HomeSection = ({
-  title,
-  posts,
-  view,
-}) => {
+const HomeSection = ({ title, posts, view }) => {
   return (
     <section className="border border-[#bdbdbd] bg-white">
-
       <div className="bg-[#a90000] text-white text-center py-[5px]">
-
-        <h2 className="text-[16px] font-bold">
-          {title}
-        </h2>
-
+        <h2 className="text-[16px] font-bold">{title}</h2>
       </div>
-
       <div className="px-2 py-1">
-
         {posts.length === 0 ? (
-
-          <div className="text-center text-[11px] text-slate-500 py-6">
-            No updates available
-          </div>
-
+          <div className="text-center text-[11px] text-slate-500 py-6">No updates available</div>
         ) : (
-
-          posts.map((post) => (
-            <PostItem
-              key={post._id}
-              post={post}
-            />
-          ))
-
+          posts.map((post) => <PostItem key={post._id} post={post} />)
         )}
-
       </div>
-
       {posts.length > 0 && (
-
         <div className="text-center py-2">
-
-          <Link
-            to={view}
-            className="text-[11px] font-bold text-blue-700 hover:text-red-700 hover:underline no-underline"
-          >
-            View More
-          </Link>
-
+          <Link to={view} className="text-[11px] font-bold text-blue-700 hover:text-red-700 hover:underline no-underline">View More</Link>
         </div>
-
       )}
-
     </section>
   );
 };
 
-
-/* =========================================================
-   POST ITEM
-========================================================= */
-
-const PostItem = ({
-  post,
-}) => {
-
+const PostItem = ({ post }) => {
   const isNew = checkNew(post);
-
   return (
     <Link
       to={`/post/${post.slug}`}
       className="flex items-start gap-1 py-[4px] border-b border-[#dddddd] text-[11px] leading-[17px] text-blue-700 hover:text-red-700 hover:underline no-underline"
     >
-
-      <span className="text-black font-bold">
-        »
-      </span>
-
+      <span className="text-black font-bold">»</span>
       <span>
-
         {post.title}
-
-        {isNew && (
-          <span className="text-red-600 text-[9px] font-extrabold ml-1">
-            NEW
-          </span>
-        )}
-
+        {isNew && <span className="text-red-600 text-[9px] font-extrabold ml-1">NEW</span>}
       </span>
-
     </Link>
   );
 };
 
-
-/* =========================================================
-   NEW POST
-========================================================= */
-
 const checkNew = (post) => {
-
-  const date = new Date(
-    post.publishedAt ||
-      post.createdAt ||
-      0
-  );
-
-  if (!date.getTime()) {
-    return false;
-  }
-
-  const difference =
-    Date.now() - date.getTime();
-
-  return (
-    difference <=
-    3 * 24 * 60 * 60 * 1000
-  );
+  const date = new Date(post.publishedAt || post.createdAt || 0);
+  if (!date.getTime()) return false;
+  const difference = Date.now() - date.getTime();
+  return difference <= 3 * 24 * 60 * 60 * 1000;
 };
 
-
-/* =========================================================
-   FOOTER COLUMN
-========================================================= */
-
-const FooterColumn = ({
-  title,
-  links,
-}) => {
+const FooterColumn = ({ title, links }) => {
   return (
     <div>
-
-      <h3 className="font-bold text-sm">
-        {title}
-      </h3>
-
+      <h3 className="font-bold text-sm">{title}</h3>
       <div className="mt-2 space-y-1 text-[11px]">
-
-        {links.map(
-          ([label, path]) => (
-            <Link
-              key={path}
-              to={path}
-              className="block text-slate-300 hover:text-white no-underline"
-            >
-              {label}
-            </Link>
-          )
-        )}
-
+        {links.map(([label, path]) => (
+          <Link key={path} to={path} className="block text-slate-300 hover:text-white no-underline">{label}</Link>
+        ))}
       </div>
-
     </div>
   );
 };
-
 
 export default Home;
