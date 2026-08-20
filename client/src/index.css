@@ -14,6 +14,37 @@ body {
   color: #222;
 }
 
+/* =====================================================
+   GLOBAL BOLD TYPOGRAPHY
+   Apply a stronger font weight across the complete site,
+   including public pages and admin pages.
+===================================================== */
+body,
+body * {
+  font-weight: 600 !important;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+strong,
+b,
+button,
+.bj-logo-name,
+.bj-logo-box,
+.bj-nav a,
+.bj-intro h1,
+.bj-latest-title,
+.bj-section-title,
+.bj-info-title,
+.bj-new,
+.bj-view-more {
+  font-weight: 800 !important;
+}
+
 a {
   text-decoration: none;
 }
@@ -67,7 +98,6 @@ a {
   background: #b30000;
   color: white;
   font-size: 23px;
-  font-weight: 800;
   border-radius: 3px;
 }
 
@@ -75,7 +105,6 @@ a {
   color: #b30000;
   font-size: 34px;
   line-height: 1;
-  font-weight: 800;
 }
 
 .bj-logo-subtitle {
@@ -110,7 +139,6 @@ a {
 .bj-nav a {
   color: white;
   font-size: 14px;
-  font-weight: 700;
   padding: 13px 17px;
   border-right: 1px solid rgba(255,255,255,0.2);
 }
@@ -139,7 +167,6 @@ a {
   margin: 0;
   color: #b30000;
   font-size: 27px;
-  font-weight: 800;
 }
 
 .bj-intro h2 {
@@ -211,7 +238,6 @@ a {
   background: #b30000;
   color: white;
   font-size: 17px;
-  font-weight: 800;
 }
 
 .bj-latest-content {
@@ -256,7 +282,6 @@ a {
   background: #b30000;
   color: white;
   font-size: 17px;
-  font-weight: 800;
   border-bottom: 2px solid #850000;
 }
 
@@ -283,7 +308,7 @@ a {
 
 .bj-arrow {
   color: #b30000;
-  font-weight: 900;
+  font-weight: 900 !important;
   flex-shrink: 0;
 }
 
@@ -297,7 +322,6 @@ a {
   background: #ff0000;
   color: white;
   font-size: 9px;
-  font-weight: 800;
   text-transform: uppercase;
 }
 
@@ -309,7 +333,6 @@ a {
   padding: 9px 12px;
   color: #b30000;
   font-size: 13px;
-  font-weight: 700;
   background: #fafafa;
 }
 
@@ -341,7 +364,6 @@ a {
   background: #333;
   color: white;
   font-size: 17px;
-  font-weight: 800;
 }
 
 .bj-info-content {
@@ -515,4 +537,3 @@ a {
     font-size: 13px;
   }
 }
-
