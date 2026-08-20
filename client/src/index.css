@@ -52,93 +52,84 @@ h1,h2,h3,h4,h5,h6,strong,b,button,.bj-logo-name,.bj-logo-box,.bj-nav a,.bj-intro
 .bj-footer-copy { margin-top: 18px; padding-top: 15px; border-top: 1px solid #444; text-align: center; color: #999; font-size: 13px !important; }
 
 /* Home page content polish — header/nav/footer remain untouched */
-.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 {
-  padding-top: 10px !important;
-  padding-left: 14px !important;
-  padding-right: 14px !important;
-  background: #fff;
-}
-.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:first-child {
-  border-color: #d8dee7 !important;
-  background: #fafbfc !important;
-  padding: 10px 14px !important;
-}
+.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 { padding-top: 10px !important; padding-left: 14px !important; padding-right: 14px !important; background: #fff; }
+.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:first-child { border-color: #d8dee7 !important; background: #fafbfc !important; padding: 10px 14px !important; }
 .min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(2) { margin-top: 8px !important; }
-.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) {
-  margin-top: 10px !important;
-  background: #fff !important;
-  border: 1px solid #cfd7e3 !important;
-  padding: 0 !important;
-  box-shadow: 0 2px 8px rgba(15,23,42,.05) !important;
-}
-.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) > div:first-child {
-  background: #050d52 !important;
-  padding: 8px 12px !important;
-}
+.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) { margin-top: 10px !important; background: #fff !important; border: 1px solid #cfd7e3 !important; padding: 0 !important; box-shadow: 0 2px 8px rgba(15,23,42,.05) !important; }
+.min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) > div:first-child { background: #050d52 !important; padding: 8px 12px !important; }
 .min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) form { padding: 6px !important; }
 .min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 > div:nth-child(3) input { border-radius: 3px !important; border: 1px solid #d2d8e1 !important; }
-
-/* Section headings */
-.min-h-screen.bg-\[\#eeeeee\] .bg-\[\#a90000\] {
-  background: #b30000 !important;
-  color: #fff !important;
-  border-bottom: 2px solid #850000 !important;
-  padding: 9px 12px !important;
-}
-.min-h-screen.bg-\[\#eeeeee\] .bg-\[\#a90000\] h2 {
-  color: #fff !important;
-  font-size: 17px !important;
-}
-
-/* Quick cards */
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#1e88e5]"],
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#00897b]"],
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#fb8c00]"],
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#8e24aa]"],
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#e53935]"] {
-  border-color: #d7dee8 !important;
-  border-top-width: 3px !important;
-  box-shadow: 0 1px 5px rgba(15,23,42,.04) !important;
-}
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#1e88e5]"]:hover,
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#00897b]"]:hover,
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#fb8c00]"]:hover,
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#8e24aa]"]:hover,
-.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#e53935]"]:hover {
-  border-color: #b30000 !important;
-  box-shadow: 0 3px 10px rgba(15,23,42,.08) !important;
-}
-
-/* Main content cards */
+.min-h-screen.bg-\[\#eeeeee\] .bg-\[\#a90000\] { background: #b30000 !important; color: #fff !important; border-bottom: 2px solid #850000 !important; padding: 9px 12px !important; }
+.min-h-screen.bg-\[\#eeeeee\] .bg-\[\#a90000\] h2 { color: #fff !important; font-size: 17px !important; }
+.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#1e88e5]"], .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#00897b]"], .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#fb8c00]"], .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#8e24aa]"], .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#e53935]"] { border-color: #d7dee8 !important; border-top-width: 3px !important; box-shadow: 0 1px 5px rgba(15,23,42,.04) !important; }
+.min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#1e88e5]"]:hover, .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#00897b]"]:hover, .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#fb8c00]"]:hover, .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#8e24aa]"]:hover, .min-h-screen.bg-\[\#eeeeee\] a[class*="border-t-[#e53935]"]:hover { border-color: #b30000 !important; box-shadow: 0 3px 10px rgba(15,23,42,.08) !important; }
 .min-h-screen.bg-\[\#eeeeee\] main { margin-top: 12px !important; }
-.min-h-screen.bg-\[\#eeeeee\] main section {
-  border-color: #d7dee8 !important;
-  box-shadow: 0 1px 5px rgba(15,23,42,.04) !important;
-}
+.min-h-screen.bg-\[\#eeeeee\] main section { border-color: #d7dee8 !important; box-shadow: 0 1px 5px rgba(15,23,42,.04) !important; }
 .min-h-screen.bg-\[\#eeeeee\] main section h2 { letter-spacing: 0; }
 .min-h-screen.bg-\[\#eeeeee\] main section .text-\[\#b30000\] { color: #b30000 !important; }
-.min-h-screen.bg-\[\#eeeeee\] main a.border-b {
-  padding-top: 7px !important;
-  padding-bottom: 7px !important;
-  min-height: 0 !important;
+.min-h-screen.bg-\[\#eeeeee\] main a.border-b { padding-top: 7px !important; padding-bottom: 7px !important; min-height: 0 !important; }
+.min-h-screen.bg-\[\#eeeeee\] main .text-center.text-\[11px\] { padding-top: 18px !important; padding-bottom: 18px !important; }
+.min-h-screen.bg-\[\#eeeeee\] main section:has(.text-center.text-\[11px\]) .text-center.text-\[11px\] { min-height: 72px !important; }
+
+/* IMPORTANT UPDATES — compact news-tile design */
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) {
+  margin-top: 12px !important;
+  background: #fff;
+  border: 1px solid #d9dee7;
+  padding: 0 0 8px;
 }
-.min-h-screen.bg-\[\#eeeeee\] main .text-center.text-\[11px\] {
-  padding-top: 18px !important;
-  padding-bottom: 18px !important;
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div.bg-\[\#a90000\] {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  min-height: 42px !important;
+  padding: 9px 13px !important;
+  background: #b30000 !important;
+  border-bottom: 2px solid #850000 !important;
+}
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div.bg-\[\#a90000\"] h2 { font-size: 17px !important; }
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) {
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 8px !important;
+  margin-top: 8px !important;
+  padding: 0 8px !important;
+}
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) > a {
+  position: relative;
+  min-height: 70px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
+  border-radius: 5px !important;
+  padding: 10px 10px 10px 30px !important;
+  background: #fff !important;
+  color: #0645ad !important;
+  border: 1px solid #dce2ea !important;
+  border-left: 4px solid #d40000 !important;
+  box-shadow: 0 1px 4px rgba(15,23,42,.05) !important;
+  transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease !important;
+}
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) > a::before {
+  content: "NEW";
+  position: absolute;
+  left: 9px;
+  top: 8px;
+  font-size: 8px !important;
+  line-height: 13px;
+  font-weight: 800 !important;
+  color: #d40000;
+}
+.min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) > a:hover {
+  transform: translateY(-2px);
+  border-color: #b9c5d5 !important;
+  border-left-color: #d40000 !important;
+  box-shadow: 0 5px 12px rgba(15,23,42,.10) !important;
+  text-decoration: none !important;
 }
 
-/* Make empty category cards compact instead of leaving large blank areas */
-.min-h-screen.bg-\[\#eeeeee\] main section:has(.text-center.text-\[11px\]) .text-center.text-\[11px\] {
-  min-height: 72px !important;
-}
-
-/* Latest jobs gets clean two-column list on desktop */
-@media (min-width: 769px) {
-  .min-h-screen.bg-\[\#eeeeee\] main section .grid.grid-cols-1.sm\:grid-cols-2 > a {
-    border-right: 1px solid #eef1f5;
-  }
-}
-
+@media (min-width: 769px) { .min-h-screen.bg-\[\#eeeeee\] main section .grid.grid-cols-1.sm\:grid-cols-2 > a { border-right: 1px solid #eef1f5; } }
 @media (max-width: 768px) {
   .bj-container { padding-left: 8px; padding-right: 8px; }
   .bj-header-inner { min-height: 78px; justify-content: space-between; }
@@ -160,5 +151,12 @@ h1,h2,h3,h4,h5,h6,strong,b,button,.bj-logo-name,.bj-logo-box,.bj-nav a,.bj-intro
   .bj-section-title { font-size: 17px !important; }
   .bj-post-link { font-size: 14px !important; }
   .min-h-screen.bg-\[\#eeeeee\] > div > div.px-3 { padding-left: 9px !important; padding-right: 9px !important; }
+  .min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px !important; padding: 0 7px !important; }
+  .min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) > a { min-height: 62px !important; padding: 9px 8px 9px 27px !important; font-size: 10px !important; }
 }
-@media (max-width: 420px) { .bj-logo-name { font-size: 25px !important; } .bj-logo-subtitle { display: none; } .bj-search input { font-size: 14px !important; } }
+@media (max-width: 420px) {
+  .bj-logo-name { font-size: 25px !important; }
+  .bj-logo-subtitle { display: none; }
+  .bj-search input { font-size: 14px !important; }
+  .min-h-screen.bg-\[\#eeeeee\] section:has(a.bg-\[\#e53935\"]) > div:not(.bg-\[\#a90000\"]) > a { min-height: 58px !important; }
+}
