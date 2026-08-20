@@ -11,47 +11,65 @@ const Home = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
-  useEffect(() => { fetchPosts(); }, []);
-  const fetchPosts = async () => {
-    try { setLoading(true); const response = await axios.get(`${API}/posts`); const data = response.data?.posts || []; setPosts(data.filter((post) => post.status === "published" && post.isDeleted !== true).sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0))); }
-    catch (error) { console.error("Home posts error:", error); }
+  useEffect(() => { loadPosts(); }, []);
+  const loadPosts = async () => {
+    try {
+      const res = await axios.get(`${API}/posts`);
+      const data = res.data?.posts || [];
+      setPosts(data.filter(p => p.status === "published" && p.isDeleted !== true).sort((a,b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0)));
+    } catch (e) { console.error("Failed to load posts", e); }
     finally { setLoading(false); }
   };
-  const getPosts = (type, limit = 12) => posts.filter((post) => post.type === type).slice(0, limit);
-  const featuredPosts = useMemo(() => posts.filter((post) => post.featured === true).slice(0, 6), [posts]);
-  const searchResults = useMemo(() => { const value = search.trim().toLowerCase(); return value ? posts.filter((post) => post.title?.toLowerCase().includes(value)).slice(0, 12) : []; }, [search, posts]);
-  const siteUrl = window.location.origin;
-  const seoTitle = "BharatJobs - Latest Government Jobs, Results, Admit Card & Sarkari Updates";
-  const seoDescription = "BharatJobs provides the latest government jobs, Sarkari jobs, exam results, admit cards, answer keys, syllabus, admissions and recruitment notifications.";
+  const byType = (type, limit = 10) => posts.filter(p => p.type === type).slice(0, limit);
+  const featured = useMemo(() => posts.filter(p => p.featured === true).slice(0, 5), [posts]);
+  const results = useMemo(() => { const q = search.trim().toLowerCase(); return q ? posts.filter(p => p.title?.toLowerCase().includes(q)).slice(0, 15) : []; }, [search, posts]);
+  const count = type => posts.filter(p => p.type === type).length;
 
-  return (<>
-    <Helmet><title>{seoTitle}</title><meta name="description" content={seoDescription} /><meta name="keywords" content="BharatJobs, Government Jobs, Sarkari Jobs, Latest Government Jobs, Sarkari Result, Admit Card, Government Result, Answer Key, Syllabus, Admission, Recruitment" /><meta name="robots" content="index, follow, max-image-preview:large" /><link rel="canonical" href={siteUrl} /><meta property="og:type" content="website" /><meta property="og:title" content={seoTitle} /><meta property="og:description" content={seoDescription} /><meta property="og:url" content={siteUrl} /><meta property="og:site_name" content="BharatJobs" /><meta name="twitter:card" content="summary" /><meta name="twitter:title" content={seoTitle} /><meta name="twitter:description" content={seoDescription} /></Helmet>
+  return <>
+    <Helmet><title>BharatJobs - Latest Government Jobs, Results & Admit Card</title><meta name="description" content="Latest government jobs, Sarkari results, admit cards, answer keys, admissions and recruitment notifications on BharatJobs." /></Helmet>
     <div className="min-h-screen bg-[#eeeeee] font-[Arial,sans-serif]"><div className="w-full max-w-[1000px] mx-auto bg-white min-h-screen">
       {/* HEADER — unchanged */}
       <header className="bg-[#d40000]"><div className="h-[105px] flex flex-col items-center justify-center text-center px-3"><Link to="/" className="no-underline"><h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">BHARAT JOBS</h1><p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">BharatJobs.com</p></Link></div></header>
       <nav className="bg-[#050d52]"><div className="flex flex-wrap justify-center"><NavItem to="/" text="Home" active /><NavItem to="/jobs" text="Latest Job" /><NavItem to="/admit-card" text="Admit Card" /><NavItem to="/results" text="Result" /><NavItem to="/admission" text="Admission" /><NavItem to="/syllabus" text="Syllabus" /><NavItem to="/answer-key" text="Answer Key" /><NavItem to="/contact" text="Contact Us" /></div></nav>
-      <div className="px-3 sm:px-5 pt-4">
-        <div className="home-welcome"><div className="home-welcome-copy"><span className="home-kicker">BHARATJOBS • GOVERNMENT CAREER PORTAL</span><h2>Find the right government opportunity</h2><p>Latest Jobs, Results, Admit Cards and other important exam updates — all in one simple place.</p></div><div className="home-welcome-stats"><div><strong>{posts.length}</strong><span>Total Updates</span></div><div><strong>{getPosts("job").length}</strong><span>Latest Jobs</span></div></div></div>
-        <div className="home-search-wrap"><div className="home-search-title"><span>Search BharatJobs</span><small>Find jobs, exams, results & notifications</small></div><form onSubmit={(e) => e.preventDefault()} className="home-search-form"><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search by job name, exam, department or result..." />{search && <button type="button" onClick={() => setSearch("")} aria-label="Clear search">×</button>}<button type="submit">Search</button></form></div>
-        {search.trim() ? <section className="home-panel mt-4"><PanelHeading title="Search Results" count={searchResults.length} /><div className="home-list">{searchResults.length ? searchResults.map((post) => <PostItem key={post._id} post={post} />) : <div className="home-empty">No matching posts found.</div>}</div></section> : <>
-          <section className="mt-5"><div className="home-section-heading"><div><span>EXPLORE</span><h2>Quick Access</h2></div><p>Go directly to what you need</p></div><div className="quick-grid"><QuickCard to="/jobs" title="Latest Jobs" desc="New government vacancies" number={getPosts("job").length} icon="J" /><QuickCard to="/results" title="Results" desc="Latest exam results" number={getPosts("result").length} icon="R" /><QuickCard to="/admit-card" title="Admit Card" desc="Download your admit card" number={getPosts("admit-card").length} icon="A" /><QuickCard to="/answer-key" title="Answer Key" desc="Official keys & solutions" number={getPosts("answer-key").length} icon="K" /><QuickCard to="/admission" title="Admission" desc="Admission notifications" number={getPosts("admission").length} icon="D" /></div></section>
-          {featuredPosts.length > 0 && <section className="mt-5 home-featured"><div className="home-section-heading"><div><span>DON'T MISS</span><h2>Important Updates</h2></div><Link to="/jobs">View all updates →</Link></div><div className="featured-grid">{featuredPosts.map((post, index) => <Link key={post._id} to={`/post/${post.slug}`} className="featured-card"><span className="featured-index">0{index + 1}</span><div><strong>{post.title}</strong><small>{checkNew(post) ? "New notification" : "Featured notification"}</small></div><span className="featured-arrow">→</span></Link>)}</div></section>}
-          {loading ? <div className="home-empty py-12">Loading latest updates...</div> : <><div className="home-content-layout mt-5"><div className="home-main-column"><HomeSection title="Latest Jobs" subtitle="Fresh government recruitment notifications" posts={getPosts("job", 12)} view="/jobs" tone="blue" featured /><HomeSection title="Latest Posts" subtitle="Recently published BharatJobs updates" posts={posts.slice(0, 10)} view="/jobs" tone="red" /></div><aside className="home-side-column"><HomeSection title="Results" subtitle="Latest exam results" posts={getPosts("result", 5)} view="/results" tone="green" compact /><HomeSection title="Admit Cards" subtitle="Download admit cards" posts={getPosts("admit-card", 5)} view="/admit-card" tone="orange" compact /></aside></div><div className="home-category-grid mt-4"><HomeSection title="Answer Key" subtitle="Official answer keys & solutions" posts={getPosts("answer-key", 7)} view="/answer-key" tone="purple" /><HomeSection title="Admission" subtitle="Admission & application updates" posts={getPosts("admission", 7)} view="/admission" tone="red" /></div></>}
-          <section className="mt-5 home-info-grid"><InfoCard title="Why use BharatJobs?" text="Everything you need for government exam preparation and recruitment updates, organized category-wise for quick access." items={["Latest recruitment notifications", "Results and admit cards", "Answer keys and admission updates", "Simple and fast category browsing"]} /><InfoCard title="Important Notice" text="BharatJobs is an informational platform. Always verify important details with the official notification before applying." items={["Check eligibility and age limit", "Confirm application dates and fees", "Verify documents and official links"]} /></section><section className="mt-4 home-seo"><h2>Latest Government Jobs & Sarkari Updates</h2><p>BharatJobs helps candidates find the latest government recruitment notifications, online forms, examination results, admit cards, answer keys, admissions and other important career updates in one place.</p></section>
+
+      <div className="bj-home">
+        <div className="bj-search"><div><b>Search Government Updates</b><span>Find jobs, results, admit cards and exams</span></div><form onSubmit={e => e.preventDefault()}><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search job, exam, department or result..." />{search && <button type="button" onClick={() => setSearch("")}>×</button>}<button type="submit">Search</button></form></div>
+
+        {!search.trim() && <>
+          <div className="bj-category-strip">
+            <Category to="/jobs" label="Latest Jobs" count={count("job")} icon="01" />
+            <Category to="/results" label="Results" count={count("result")} icon="02" />
+            <Category to="/admit-card" label="Admit Card" count={count("admit-card")} icon="03" />
+            <Category to="/answer-key" label="Answer Key" count={count("answer-key")} icon="04" />
+            <Category to="/admission" label="Admission" count={count("admission")} icon="05" />
+          </div>
+
+          <div className="bj-news-head"><div><span>FEATURED</span><h2>Important Updates</h2></div><Link to="/jobs">View all →</Link></div>
+          {featured.length > 0 && <div className="bj-featured-list">{featured.map((post, i) => <Link className="bj-featured-row" key={post._id} to={`/post/${post.slug}`}><strong>{String(i + 1).padStart(2,"0")}</strong><div><b>{post.title}</b><small>{isNew(post) ? "New update" : "Featured notification"}</small></div><span>›</span></Link>)}</div>}
+
+          {loading ? <div className="bj-loading">Loading latest updates...</div> : <>
+            <div className="bj-block-title"><div><span>LATEST</span><h2>Latest Government Jobs</h2></div><Link to="/jobs">See all jobs →</Link></div>
+            <section className="bj-job-board"><div className="bj-job-main"><div className="bj-board-head"><b>Recruitment Notification</b><span>Recently Published</span></div>{byType("job", 12).map(post => <PostRow key={post._id} post={post} />)}{!byType("job").length && <Empty />}</div><aside className="bj-side-stack"><MiniSection title="Latest Results" link="/results" posts={byType("result",6)} /><MiniSection title="Admit Card" link="/admit-card" posts={byType("admit-card",6)} /></aside></section>
+
+            <div className="bj-two-columns"><MiniSection title="Answer Key" link="/answer-key" posts={byType("answer-key",7)} /><MiniSection title="Admission" link="/admission" posts={byType("admission",7)} /></div>
+          </>}
+
+          <div className="bj-bottom-info"><div><span>BHARATJOBS</span><h3>Everything for your government exam journey</h3><p>Browse recruitment notifications, results, admit cards, answer keys and admission updates from one place.</p></div><div><b>Important</b><p>Always read and verify the official notification before applying. Check eligibility, dates, fees and documents carefully.</p></div></div>
         </>}
+
+        {search.trim() && <section className="bj-search-results"><div className="bj-block-title"><div><span>SEARCH</span><h2>Search Results</h2></div><b>{results.length} found</b></div>{results.length ? results.map(post => <PostRow key={post._id} post={post} />) : <Empty text="No matching posts found." />}</section>}
       </div>
+
       {/* FOOTER — unchanged */}
       <footer className="bg-[#050d52] text-white mt-7"><div className="px-4 py-6"><div className="grid grid-cols-1 sm:grid-cols-3 gap-5"><div><h3 className="font-bold text-base">BharatJobs</h3><p className="text-[11px] text-slate-300 mt-2 leading-5">Latest Government Jobs, Results, Admit Cards and Examination Notifications.</p></div><FooterColumn title="Important Links" links={[["Latest Jobs", "/jobs"], ["Results", "/results"], ["Admit Card", "/admit-card"]]} /><FooterColumn title="Other Links" links={[["Answer Key", "/answer-key"], ["Admission", "/admission"], ["Syllabus", "/syllabus"]]} /></div><div className="border-t border-blue-900 mt-5 pt-4 text-center"><p className="text-[10px] text-slate-400">Copyright © {new Date().getFullYear()} | BharatJobs.com</p></div></div></footer>
-    </div></div>
-  </>);
+    </div></div>;
 };
 
-const NavItem = ({ to, text, active = false }) => <Link to={to} className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${active ? "bg-[#17246b]" : "hover:bg-[#17246b]"}`}>{text}</Link>;
-const PanelHeading = ({ title, count }) => <div className="home-panel-heading"><h2>{title}</h2>{typeof count === "number" && <span>{count} updates</span>}</div>;
-const QuickCard = ({ to, title, desc, number, icon }) => <Link to={to} className="quick-card"><span className="quick-icon">{icon}</span><div className="quick-copy"><strong>{title}</strong><small>{desc}</small></div>{number > 0 && <span className="quick-count">{number}</span>}<span className="quick-arrow">→</span></Link>;
-const HomeSection = ({ title, subtitle, posts, view, tone = "blue", compact = false, featured = false }) => { const tones = { blue: "home-tone-blue", green: "home-tone-green", orange: "home-tone-orange", purple: "home-tone-purple", red: "home-tone-red" }; const visible = compact ? posts.slice(0, 5) : posts; return <section className={`home-section ${tones[tone] || tones.blue}`}><div className="home-section-title"><div><h2>{title}</h2><p>{subtitle}</p></div>{posts.length > 0 && <span>{posts.length}</span>}</div><div className={`${featured ? "home-post-grid" : "home-list"}`}>{visible.length === 0 ? <div className="home-empty">No updates available</div> : visible.map((post) => <PostItem key={post._id} post={post} />)}</div>{posts.length > 0 && <Link to={view} className="home-view-all">View all {title}<span>→</span></Link>}</section>; };
-const PostItem = ({ post }) => { const isNew = checkNew(post); return <Link to={`/post/${post.slug}`} className="home-post-item"><span className="home-post-dot">›</span><span className="home-post-title">{post.title}</span>{isNew && <span className="home-new">NEW</span>}</Link>; };
-const checkNew = (post) => { const date = new Date(post.publishedAt || post.createdAt || 0); return date.getTime() ? Date.now() - date.getTime() <= 3 * 24 * 60 * 60 * 1000 : false; };
-const InfoCard = ({ title, text, items }) => <section className="home-info-card"><h2>{title}</h2><p>{text}</p><ul>{items.map((item) => <li key={item}>{item}</li>)}</ul></section>;
-const FooterColumn = ({ title, links }) => <div><h3 className="font-bold text-sm">{title}</h3><div className="mt-2 space-y-1 text-[11px]">{links.map(([label, path]) => <Link key={path} to={path} className="block text-slate-300 hover:text-white no-underline">{label}</Link>)}</div></div>;
+const NavItem = ({to,text,active=false}) => <Link to={to} className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${active ? "bg-[#17246b]" : "hover:bg-[#17246b]"}`}>{text}</Link>;
+const Category = ({to,label,count,icon}) => <Link to={to} className="bj-category"><span>{icon}</span><div><b>{label}</b><small>{count ? `${count} updates` : "Browse now"}</small></div><i>→</i></Link>;
+const PostRow = ({post}) => <Link to={`/post/${post.slug}`} className="bj-post-row"><span className="bj-post-arrow">›</span><div><b>{post.title}</b>{isNew(post) && <em>NEW</em>}</div></Link>;
+const MiniSection = ({title,link,posts}) => <section className="bj-mini"><div className="bj-mini-head"><b>{title}</b><Link to={link}>View all</Link></div>{posts.length ? posts.map(post => <PostRow key={post._id} post={post} />) : <Empty />}</section>;
+const Empty = ({text="No updates available"}) => <div className="bj-empty">{text}</div>;
+const isNew = post => { const d = new Date(post.publishedAt || post.createdAt || 0); return d.getTime() && Date.now() - d.getTime() <= 3 * 86400000; };
+const FooterColumn = ({ title, links }) => <div><h3 className="font-bold text-sm">{title}</h3><div className="mt-2 space-y-1 text-[11px]">{links.map(([label,path]) => <Link key={path} to={path} className="block text-slate-300 hover:text-white no-underline">{label}</Link>)}</div></div>;
 export default Home;
