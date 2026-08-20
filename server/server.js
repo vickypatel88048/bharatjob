@@ -9,7 +9,6 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
-// Create the default admin automatically if it does not exist.
 const ensureAdmin = async () => {
   const email = process.env.ADMIN_EMAIL || "admin@bharatjobs.com";
   const password = process.env.ADMIN_PASSWORD || "Admin@123";
@@ -33,36 +32,30 @@ const ensureAdmin = async () => {
   console.log(`✅ Default admin created: ${email}`);
 };
 
-const startServer = async () => {
+// Keep the health endpoint available immediately so Render can detect a
+// healthy web process even while MongoDB is reconnecting.
+app.use("/", sitemapRoutes);
+
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "🚀 BharatJobs API Running...",
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on port ${PORT}`);
+});
+
+const initializeDatabase = async () => {
   try {
     await connectDB();
     await ensureAdmin();
-
-    // ==========================================
-    // SITEMAP
-    // ==========================================
-    app.use("/", sitemapRoutes);
-
-    // ==========================================
-    // API ROOT
-    // ==========================================
-    app.get("/", (req, res) => {
-      res.json({
-        success: true,
-        message: "🚀 BharatJobs API Running..."
-      });
-    });
-
-    // ==========================================
-    // SERVER
-    // ==========================================
-    app.listen(PORT, () => {
-      console.log(`🚀 Server running on port ${PORT}`);
-    });
+    console.log("✅ Database initialization completed");
   } catch (error) {
-    console.error("❌ Server startup failed:", error.message);
-    process.exit(1);
+    console.error("❌ Database initialization failed:", error.message);
+    console.error("⚠️ Server is still running. Check MONGO_URI in Render environment variables.");
   }
 };
 
-startServer();
+initializeDatabase();
