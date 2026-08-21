@@ -9,6 +9,13 @@ dotenv.config();
 
 const PORT = process.env.PORT || 5000;
 
+// JWT_SECRET is required for admin authentication.
+// Never hardcode secrets in source control.
+if (!process.env.JWT_SECRET || process.env.JWT_SECRET.trim().length < 16) {
+  console.error("❌ JWT_SECRET is missing or too short on the server");
+  process.exit(1);
+}
+
 // Create the default admin automatically if it does not exist.
 const ensureAdmin = async () => {
   const email = process.env.ADMIN_EMAIL || "admin@bharatjobs.com";
@@ -38,24 +45,15 @@ const startServer = async () => {
     await connectDB();
     await ensureAdmin();
 
-    // ==========================================
-    // SITEMAP
-    // ==========================================
     app.use("/", sitemapRoutes);
 
-    // ==========================================
-    // API ROOT
-    // ==========================================
     app.get("/", (req, res) => {
       res.json({
         success: true,
-        message: "🚀 BharatJobs API Running..."
+        message: "🚀 BharatJobs API Running...",
       });
     });
 
-    // ==========================================
-    // SERVER
-    // ==========================================
     app.listen(PORT, () => {
       console.log(`🚀 Server running on port ${PORT}`);
     });
