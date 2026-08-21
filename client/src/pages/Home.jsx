@@ -15,17 +15,8 @@ const Home = () => {
   useEffect(() => {
     const fetchPosts = async () => {
       try {
-        const response = await axios.get(`${API}/posts`, {
-          params: { page: 1, limit: 100 },
-          timeout: 20000,
-        });
-
-        const data = Array.isArray(response.data)
-          ? response.data
-          : Array.isArray(response.data?.posts)
-            ? response.data.posts
-            : [];
-
+        const response = await axios.get(`${API}/posts`, { params: { page: 1, limit: 100 }, timeout: 20000 });
+        const data = Array.isArray(response.data) ? response.data : Array.isArray(response.data?.posts) ? response.data.posts : [];
         setPosts(data);
       } catch (error) {
         console.error("Home posts API error:", error?.response?.data || error.message);
@@ -34,7 +25,6 @@ const Home = () => {
         setLoading(false);
       }
     };
-
     fetchPosts();
   }, []);
 
@@ -47,9 +37,7 @@ const Home = () => {
       admission: ["admission", "admissions"],
     };
     const allowed = aliases[type] || [type];
-    return posts
-      .filter((post) => allowed.includes(normalizeType(post?.type)))
-      .slice(0, 12);
+    return posts.filter((post) => allowed.includes(normalizeType(post?.type))).slice(0, 12);
   };
 
   const featuredPosts = useMemo(() => {
