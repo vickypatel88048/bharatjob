@@ -11,39 +11,21 @@ const Home = () => {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
-    const fetchPosts = async () => {
-      try {
-        const response = await axios.get(`${API}/posts`, {
-          params: { page: 1, limit: 100 },
-          timeout: 20000,
-        });
-        const data = Array.isArray(response.data)
-          ? response.data
-          : Array.isArray(response.data?.posts)
-            ? response.data.posts
-            : [];
-        setPosts(data);
-      } catch (error) {
-        console.error("Home posts API error:", error?.response?.data || error.message);
-        setPosts([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchPosts();
+    axios.get(`${API}/posts`, { params: { page: 1, limit: 100 } })
+      .then(({ data }) => setPosts(Array.isArray(data?.posts) ? data.posts : Array.isArray(data) ? data : []))
+      .catch((error) => { console.error("Home posts API error:", error); setPosts([]); })
+      .finally(() => setLoading(false));
   }, []);
 
-  const getPosts = (type) => {
+  const getPosts = (type) => posts.filter((post) => {
+    const value = String(post?.type || "").trim().toLowerCase().replace(/[_\s]+/g, "-");
     const aliases = {
-      job: ["job", "jobs"],
-      result: ["result", "results"],
+      job: ["job", "jobs"], result: ["result", "results"],
       "admit-card": ["admit-card", "admit-cards", "admitcard"],
-      "answer-key": ["answer-key", "answer-keys", "answerkey"],
-      admission: ["admission", "admissions"],
+      "answer-key": ["answer-key", "answer-keys", "answerkey"], admission: ["admission", "admissions"]
     };
-    const allowed = aliases[type] || [type];
-    return posts.filter((post) => allowed.includes(String(post?.type || "").trim().toLowerCase().replace(/[_\s]+/g, "-"))).slice(0, 12);
-  };
+    return (aliases[type] || [type]).includes(value);
+  }).slice(0, 12);
 
   const featuredPosts = useMemo(() => {
     const featured = posts.filter((post) => post?.featured === true);
@@ -52,8 +34,7 @@ const Home = () => {
 
   const searchResults = useMemo(() => {
     const value = search.trim().toLowerCase();
-    if (!value) return [];
-    return posts.filter((post) => post?.title?.toLowerCase().includes(value)).slice(0, 10);
+    return value ? posts.filter((post) => post?.title?.toLowerCase().includes(value)).slice(0, 10) : [];
   }, [search, posts]);
 
   return (
