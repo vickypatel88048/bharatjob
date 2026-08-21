@@ -4,9 +4,9 @@ import generateToken from "../utils/generateToken.js";
 
 export const loginAdmin = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const email = String(req.body?.email || "").trim().toLowerCase();
+    const password = String(req.body?.password || "");
 
-    // Validation
     if (!email || !password) {
       return res.status(400).json({
         success: false,
@@ -14,17 +14,15 @@ export const loginAdmin = async (req, res) => {
       });
     }
 
-    // Find admin
     const admin = await Admin.findOne({ email });
 
-    if (!admin) {
+    if (!admin || !admin.password || !admin.isActive) {
       return res.status(401).json({
         success: false,
         message: "Invalid Email or Password",
       });
     }
 
-    // Check password
     const isMatch = await bcrypt.compare(password, admin.password);
 
     if (!isMatch) {
@@ -34,10 +32,17 @@ export const loginAdmin = async (req, res) => {
       });
     }
 
-    // Generate token
+    if (!process.env.JWT_SECRET?.trim()) {
+      console.error("❌ JWT_SECRET is missing on the server");
+      return res.status(503).json({
+        success: false,
+        message: "Authentication service is not configured. Please set JWT_SECRET on the backend and redeploy.",
+      });
+    }
+
     const token = generateToken(admin._id);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login Successful",
       token,
@@ -49,9 +54,10 @@ export const loginAdmin = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    console.error("❌ Admin login failed:", error);
+    return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Admin login failed. Please check the backend configuration.",
     });
   }
 };
