@@ -38,11 +38,6 @@ const Home = () => {
   const byType = (type, limit = 10) =>
     posts.filter((post) => post.type === type).slice(0, limit);
 
-  const featured = useMemo(
-    () => posts.filter((post) => post.featured === true).slice(0, 5),
-    [posts]
-  );
-
   const searchResults = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return [];
@@ -66,7 +61,6 @@ const Home = () => {
 
       <div className="min-h-screen bg-[#eeeeee] font-[Arial,sans-serif]">
         <div className="w-full max-w-[1000px] mx-auto bg-white min-h-screen">
-          {/* HEADER — unchanged */}
           <header className="bg-[#d40000]">
             <div className="h-[105px] flex flex-col items-center justify-center text-center px-3">
               <Link to="/" className="no-underline">
@@ -122,35 +116,6 @@ const Home = () => {
                   <Category to="/answer-key" label="Answer Key" count={count("answer-key")} icon="04" />
                   <Category to="/admission" label="Admission" count={count("admission")} icon="05" />
                 </div>
-
-                <div className="bj-news-head">
-                  <div>
-                    <span>FEATURED</span>
-                    <h2>Important Updates</h2>
-                  </div>
-                  <Link to="/jobs">View all →</Link>
-                </div>
-
-                {featured.length > 0 && (
-                  <div className="bj-featured-list">
-                    {featured.map((post, index) => (
-                      <Link
-                        className="bj-featured-row"
-                        key={post._id}
-                        to={`/post/${post.slug}`}
-                      >
-                        <strong>{String(index + 1).padStart(2, "0")}</strong>
-                        <div>
-                          <b>{post.title}</b>
-                          <small>
-                            {isNew(post) ? "New update" : "Featured notification"}
-                          </small>
-                        </div>
-                        <span>›</span>
-                      </Link>
-                    ))}
-                  </div>
-                )}
 
                 {loading ? (
                   <div className="bj-loading">Loading latest updates...</div>
@@ -244,7 +209,6 @@ const Home = () => {
             )}
           </main>
 
-          {/* FOOTER — unchanged */}
           <footer className="bg-[#050d52] text-white mt-7">
             <div className="px-4 py-6">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
