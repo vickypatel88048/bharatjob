@@ -17,7 +17,7 @@ const Home = () => {
 
   const loadPosts = async () => {
     try {
-      const res = await axios.get(`${API}/posts`);
+      const res = await axios.get(`${API}/posts/home`);
       const data = res.data?.posts || [];
       setPosts(
         data
@@ -99,9 +99,7 @@ const Home = () => {
                   placeholder="Search job, exam, department or result..."
                 />
                 {search && (
-                  <button type="button" onClick={() => setSearch("")}>
-                    ×
-                  </button>
+                  <button type="button" onClick={() => setSearch("")}>×</button>
                 )}
                 <button type="submit">Search</button>
               </form>
@@ -142,30 +140,14 @@ const Home = () => {
                       </div>
 
                       <aside className="bj-side-stack">
-                        <MiniSection
-                          title="Latest Results"
-                          link="/results"
-                          posts={byType("result", 6)}
-                        />
-                        <MiniSection
-                          title="Admit Card"
-                          link="/admit-card"
-                          posts={byType("admit-card", 6)}
-                        />
+                        <MiniSection title="Latest Results" link="/results" posts={byType("result", 6)} />
+                        <MiniSection title="Admit Card" link="/admit-card" posts={byType("admit-card", 6)} />
                       </aside>
                     </section>
 
                     <div className="bj-two-columns">
-                      <MiniSection
-                        title="Answer Key"
-                        link="/answer-key"
-                        posts={byType("answer-key", 7)}
-                      />
-                      <MiniSection
-                        title="Admission"
-                        link="/admission"
-                        posts={byType("admission", 7)}
-                      />
+                      <MiniSection title="Answer Key" link="/answer-key" posts={byType("answer-key", 7)} />
+                      <MiniSection title="Admission" link="/admission" posts={byType("admission", 7)} />
                     </div>
                   </>
                 )}
@@ -174,18 +156,11 @@ const Home = () => {
                   <div>
                     <span>BHARATJOBS</span>
                     <h3>Everything for your government exam journey</h3>
-                    <p>
-                      Browse recruitment notifications, results, admit cards,
-                      answer keys and admission updates from one place.
-                    </p>
+                    <p>Browse recruitment notifications, results, admit cards, answer keys and admission updates from one place.</p>
                   </div>
                   <div>
                     <b>Important</b>
-                    <p>
-                      Always read and verify the official notification before
-                      applying. Check eligibility, dates, fees and documents
-                      carefully.
-                    </p>
+                    <p>Always read and verify the official notification before applying. Check eligibility, dates, fees and documents carefully.</p>
                   </div>
                 </div>
               </>
@@ -198,13 +173,7 @@ const Home = () => {
                   </div>
                   <b>{searchResults.length} found</b>
                 </div>
-                {searchResults.length > 0 ? (
-                  searchResults.map((post) => (
-                    <PostRow key={post._id} post={post} />
-                  ))
-                ) : (
-                  <Empty text="No matching posts found." />
-                )}
+                {searchResults.length > 0 ? searchResults.map((post) => <PostRow key={post._id} post={post} />) : <Empty text="No matching posts found." />}
               </section>
             )}
           </main>
@@ -214,31 +183,13 @@ const Home = () => {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-5">
                 <div>
                   <h3 className="font-bold text-base">BharatJobs</h3>
-                  <p className="text-[11px] text-slate-300 mt-2 leading-5">
-                    Latest Government Jobs, Results, Admit Cards and Examination Notifications.
-                  </p>
+                  <p className="text-[11px] text-slate-300 mt-2 leading-5">Latest Government Jobs, Results, Admit Cards and Examination Notifications.</p>
                 </div>
-                <FooterColumn
-                  title="Important Links"
-                  links={[
-                    ["Latest Jobs", "/jobs"],
-                    ["Results", "/results"],
-                    ["Admit Card", "/admit-card"],
-                  ]}
-                />
-                <FooterColumn
-                  title="Other Links"
-                  links={[
-                    ["Answer Key", "/answer-key"],
-                    ["Admission", "/admission"],
-                    ["Syllabus", "/syllabus"],
-                  ]}
-                />
+                <FooterColumn title="Important Links" links={[["Latest Jobs", "/jobs"], ["Results", "/results"], ["Admit Card", "/admit-card"]]} />
+                <FooterColumn title="Other Links" links={[["Answer Key", "/answer-key"], ["Admission", "/admission"], ["Syllabus", "/syllabus"]]} />
               </div>
               <div className="border-t border-blue-900 mt-5 pt-4 text-center">
-                <p className="text-[10px] text-slate-400">
-                  Copyright © {new Date().getFullYear()} | BharatJobs.com
-                </p>
+                <p className="text-[10px] text-slate-400">Copyright © {new Date().getFullYear()} | BharatJobs.com</p>
               </div>
             </div>
           </footer>
@@ -248,72 +199,12 @@ const Home = () => {
   );
 };
 
-const NavItem = ({ to, text, active = false }) => (
-  <Link
-    to={to}
-    className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${
-      active ? "bg-[#17246b]" : "hover:bg-[#17246b]"
-    }`}
-  >
-    {text}
-  </Link>
-);
-
-const Category = ({ to, label, count, icon }) => (
-  <Link to={to} className="bj-category">
-    <span>{icon}</span>
-    <div>
-      <b>{label}</b>
-      <small>{count ? `${count} updates` : "Browse now"}</small>
-    </div>
-    <i>→</i>
-  </Link>
-);
-
-const PostRow = ({ post }) => (
-  <Link to={`/post/${post.slug}`} className="bj-post-row">
-    <span className="bj-post-arrow">›</span>
-    <div>
-      <b>{post.title}</b>
-      {isNew(post) && <em>NEW</em>}
-    </div>
-  </Link>
-);
-
-const MiniSection = ({ title, link, posts }) => (
-  <section className="bj-mini">
-    <div className="bj-mini-head">
-      <b>{title}</b>
-      <Link to={link}>View all</Link>
-    </div>
-    {posts.length > 0 ? posts.map((post) => <PostRow key={post._id} post={post} />) : <Empty />}
-  </section>
-);
-
-const Empty = ({ text = "No updates available" }) => (
-  <div className="bj-empty">{text}</div>
-);
-
-const isNew = (post) => {
-  const date = new Date(post.publishedAt || post.createdAt || 0);
-  return date.getTime() > 0 && Date.now() - date.getTime() <= 3 * 86400000;
-};
-
-const FooterColumn = ({ title, links }) => (
-  <div>
-    <h3 className="font-bold text-sm">{title}</h3>
-    <div className="mt-2 space-y-1 text-[11px]">
-      {links.map(([label, path]) => (
-        <Link
-          key={path}
-          to={path}
-          className="block text-slate-300 hover:text-white no-underline"
-        >
-          {label}
-        </Link>
-      ))}
-    </div>
-  </div>
-);
+const NavItem = ({ to, text, active = false }) => <Link to={to} className={`px-3 sm:px-4 py-[11px] text-[12px] sm:text-[13px] text-white no-underline ${active ? "bg-[#17246b]" : "hover:bg-[#17246b]"}`}>{text}</Link>;
+const Category = ({ to, label, count, icon }) => <Link to={to} className="bj-category"><span>{icon}</span><div><b>{label}</b><small>{count ? `${count} updates` : "Browse now"}</small></div><i>→</i></Link>;
+const PostRow = ({ post }) => <Link to={`/post/${post.slug}`} className="bj-post-row"><span className="bj-post-arrow">›</span><div><b>{post.title}</b>{isNew(post) && <em>NEW</em>}</div></Link>;
+const MiniSection = ({ title, link, posts }) => <section className="bj-mini"><div className="bj-mini-head"><b>{title}</b><Link to={link}>View all</Link></div>{posts.length > 0 ? posts.map((post) => <PostRow key={post._id} post={post} />) : <Empty />}</section>;
+const Empty = ({ text = "No updates available" }) => <div className="bj-empty">{text}</div>;
+const isNew = (post) => { const date = new Date(post.publishedAt || post.createdAt || 0); return date.getTime() > 0 && Date.now() - date.getTime() <= 3 * 86400000; };
+const FooterColumn = ({ title, links }) => <div><h3 className="font-bold text-sm">{title}</h3><div className="mt-2 space-y-1 text-[11px]">{links.map(([label, path]) => <Link key={path} to={path} className="block text-slate-300 hover:text-white no-underline">{label}</Link>)}</div></div>;
 
 export default Home;
