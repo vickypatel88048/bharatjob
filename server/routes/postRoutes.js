@@ -17,6 +17,8 @@ import { getHomePosts } from "../controllers/homeController.js";
 
 import { importPostsFromUrl } from "../controllers/importController.js";
 
+import { getPublicPostById } from "../controllers/publicPostController.js";
+
 const router = express.Router();
 
 // Fast public Home payload. Keep before /:slug.
@@ -28,8 +30,16 @@ router.get("/", getPosts);
 // ADMIN - IMPORT FROM URL
 router.post("/import-url", protect, importPostsFromUrl);
 
-// ADMIN - SINGLE POST BY ID
-router.get("/id/:id", protect, getPostById);
+// SINGLE POST BY ID
+// Public requests get published posts only.
+// Admin requests with a Bearer token keep full admin access.
+router.get("/id/:id", (req, res, next) => {
+  if (req.headers.authorization?.startsWith("Bearer")) {
+    return protect(req, res, () => getPostById(req, res));
+  }
+
+  return getPublicPostById(req, res, next);
+});
 
 // ADMIN - TRASH
 router.get("/trash", protect, getTrashedPosts);
