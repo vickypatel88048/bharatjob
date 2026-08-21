@@ -1,16 +1,14 @@
 {
   "name": "bharatjobs",
   "version": "1.0.0",
-  "description": "",
+  "description": "BharatJobs root workspace",
   "main": "index.js",
-  "directories": {
-    "doc": "docs"
-  },
   "scripts": {
-  "client": "npm run dev --prefix client",
-  "server": "npm run dev --prefix server",
-  "dev": "concurrently \"npm run server\" \"npm run client\""
-},
+    "client": "npm run dev --prefix client",
+    "server": "npm run dev --prefix server",
+    "start": "npm start --prefix server",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
