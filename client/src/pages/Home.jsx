@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import "./Home.css";
 
-const API = "http://localhost:5000/api";
+const API = import.meta.env.VITE_API_URL || "https://bharatjob-1.onrender.com";
 
 const Home = () => {
   const [posts, setPosts] = useState([]);
@@ -17,15 +17,9 @@ const Home = () => {
 
   const loadPosts = async () => {
     try {
-      const res = await axios.get(`${API}/posts/home`);
+      const res = await axios.get(`${API}/api/posts/home`);
       const data = res.data?.posts || [];
-      setPosts(
-        data.sort(
-          (a, b) =>
-            new Date(b.publishedAt || b.createdAt || 0) -
-            new Date(a.publishedAt || a.createdAt || 0)
-        )
-      );
+      setPosts(data.sort((a, b) => new Date(b.publishedAt || b.createdAt || 0) - new Date(a.publishedAt || a.createdAt || 0)));
     } catch (error) {
       console.error("Failed to load posts", error);
     } finally {
@@ -33,17 +27,12 @@ const Home = () => {
     }
   };
 
-  const byType = (type, limit = 10) =>
-    posts.filter((post) => post.type === type).slice(0, limit);
-
+  const byType = (type, limit = 10) => posts.filter((post) => post.type === type).slice(0, limit);
   const searchResults = useMemo(() => {
     const query = search.trim().toLowerCase();
     if (!query) return [];
-    return posts
-      .filter((post) => post.title?.toLowerCase().includes(query))
-      .slice(0, 15);
+    return posts.filter((post) => post.title?.toLowerCase().includes(query)).slice(0, 15);
   }, [search, posts]);
-
   const count = (type) => posts.filter((post) => post.type === type).length;
   const isSearching = search.trim().length > 0;
 
@@ -53,15 +42,12 @@ const Home = () => {
         <title>BharatJobs - Latest Government Jobs, Results & Admit Card</title>
         <meta name="description" content="Latest government jobs, Sarkari results, admit cards, answer keys, admissions and recruitment notifications on BharatJobs." />
       </Helmet>
-
       <div className="min-h-screen bg-[#eeeeee] font-[Arial,sans-serif]">
         <div className="w-full max-w-[1000px] mx-auto bg-white min-h-screen">
           <header className="bg-[#d40000]"><div className="h-[105px] flex flex-col items-center justify-center text-center px-3"><Link to="/" className="no-underline"><h1 className="text-[30px] sm:text-[40px] font-extrabold text-white uppercase leading-none">BHARAT JOBS</h1><p className="text-white text-[12px] sm:text-[14px] mt-2 font-bold">BharatJobs.com</p></Link></div></header>
           <nav className="bg-[#050d52]"><div className="flex flex-wrap justify-center"><NavItem to="/" text="Home" active /><NavItem to="/jobs" text="Latest Job" /><NavItem to="/admit-card" text="Admit Card" /><NavItem to="/results" text="Result" /><NavItem to="/admission" text="Admission" /><NavItem to="/syllabus" text="Syllabus" /><NavItem to="/answer-key" text="Answer Key" /><NavItem to="/contact" text="Contact Us" /></div></nav>
-
           <main className="bj-home">
             <div className="bj-search"><div><b>Search Government Updates</b><span>Find jobs, results, admit cards and exams</span></div><form onSubmit={(event) => event.preventDefault()}><input value={search} onChange={(event) => setSearch(event.target.value)} placeholder="Search job, exam, department or result..." />{search && <button type="button" onClick={() => setSearch("")}>×</button>}<button type="submit">Search</button></form></div>
-
             {!isSearching ? <>
               <div className="bj-category-strip"><Category to="/jobs" label="Latest Jobs" count={count("job")} icon="01" /><Category to="/results" label="Results" count={count("result")} icon="02" /><Category to="/admit-card" label="Admit Card" count={count("admit-card")} icon="03" /><Category to="/answer-key" label="Answer Key" count={count("answer-key")} icon="04" /><Category to="/admission" label="Admission" count={count("admission")} icon="05" /></div>
               {loading ? <div className="bj-loading">Loading latest updates...</div> : <>
@@ -71,7 +57,6 @@ const Home = () => {
               </>}
             </> : <section className="bj-search-results"><div className="bj-block-title"><div><span>SEARCH</span><h2>Search Results</h2></div><b>{searchResults.length} found</b></div>{searchResults.length > 0 ? searchResults.map((post) => <PostRow key={post._id || post.slug} post={post} />) : <Empty text="No matching posts found." />}</section>}
           </main>
-
           <footer className="bg-[#050d52] text-white mt-7"><div className="px-4 py-6"><div className="grid grid-cols-1 sm:grid-cols-3 gap-5"><div><h3 className="font-bold text-base">BharatJobs</h3><p className="text-[11px] text-slate-300 mt-2 leading-5">Latest Government Jobs, Results, Admit Cards and Examination Notifications.</p></div><FooterColumn title="Important Links" links={[["Latest Jobs", "/jobs"], ["Results", "/results"], ["Admit Card", "/admit-card"]]} /><FooterColumn title="Other Links" links={[["Answer Key", "/answer-key"], ["Admission", "/admission"], ["Syllabus", "/syllabus"]]} /></div><div className="border-t border-blue-900 mt-5 pt-4 text-center"><p className="text-[10px] text-slate-400">Copyright © {new Date().getFullYear()} | BharatJobs.com</p></div></div></footer>
         </div>
       </div>
