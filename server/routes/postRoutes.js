@@ -30,16 +30,15 @@ router.get("/", getPosts);
 // ADMIN - IMPORT FROM URL
 router.post("/import-url", protect, importPostsFromUrl);
 
-// SINGLE POST BY ID
-// Public requests get published posts only.
-// Admin requests with a Bearer token keep full admin access.
-router.get("/id/:id", (req, res, next) => {
-  if (req.headers.authorization?.startsWith("Bearer")) {
-    return protect(req, res, () => getPostById(req, res));
-  }
+// PUBLIC - SINGLE PUBLISHED POST BY ID
+// Do not require a Bearer token here because public pages can
+// carry an expired/stale admin token through a global axios interceptor.
+// Published/deleted checks are enforced inside getPublicPostById.
+router.get("/id/:id", getPublicPostById);
 
-  return getPublicPostById(req, res, next);
-});
+// ADMIN - SINGLE POST BY ID
+// Use this endpoint when the admin needs access to drafts/deleted posts.
+router.get("/admin/id/:id", protect, getPostById);
 
 // ADMIN - TRASH
 router.get("/trash", protect, getTrashedPosts);
