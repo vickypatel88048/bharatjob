@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: `${import.meta.env.VITE_API_URL || "https://bharatjob-2.onrender.com"}/api`,
+  baseURL: `${import.meta.env.VITE_API_URL || "https://bharatjob-1.onrender.com"}/api`,
 });
 
 export const adminLogin = async (email, password) => {
