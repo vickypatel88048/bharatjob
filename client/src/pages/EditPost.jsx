@@ -5,6 +5,7 @@ import { toast } from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import AdminLayout from "../components/AdminLayout";
 
+// Stable post editor: keep the original single post type flow.
 const API = `${import.meta.env.VITE_API_URL || "https://bharatjob-1.onrender.com"}/api`;
 
 const EditPost = () => {
